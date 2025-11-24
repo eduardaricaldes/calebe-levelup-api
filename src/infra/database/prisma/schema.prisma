@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  WAITING_ACTIVATION
+  RESET_PASSWORD
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum UserActivityStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+
+model User {
+  id        Int          @id @default(autoincrement())
+  name      String
+  email     String       @unique
+  password  String
+  avatarURL String?      @map("avatar_url")
+  status    UserStatus   @default(ACTIVE)
+  role      UserRole     @default(USER)
+  createdAt DateTime     @map("created_at") @default(now())
+  updatedAt DateTime     @map("updated_at") @updatedAt
+
+  rankings           Ranking[]
+  activities         UserActivity[] @relation("UserActivities")
+  approvedActivities UserActivity[] @relation("Approver") 
+
+  @@map("users")
+}
+
+model Category {
+  id          Int          @id @default(autoincrement())
+  name        String
+  points      Int
+  description String?
+  createdAt   DateTime     @map("created_at") @default(now())
+  updatedAt   DateTime     @map("updated_at") @updatedAt
+
+  actions    Action[]
+  challenges Challenge[]
+
+  @@map("category")
+}
+
+model Action {
+  id          Int          @id @default(autoincrement())
+  name        String
+  date        DateTime
+  description String?
+  categoryId  Int          @map("category_id")
+  createdAt   DateTime     @map("created_at") @default(now())
+  updatedAt   DateTime     @map("updated_at") @updatedAt
+
+  category    Category    @relation(fields: [categoryId], references: [id])
+
+  activities  UserActivity[]
+
+  @@map("action")
+}
+
+model Challenge {
+  id          Int          @id @default(autoincrement())
+  name        String
+  date        DateTime
+  description String?
+  categoryId  Int          @map("category_id")
+  createdAt   DateTime     @map("created_at") @default(now())
+  updatedAt   DateTime     @map("updated_at") @updatedAt
+
+  category    Category    @relation(fields: [categoryId], references: [id])
+
+  activities  UserActivity[]
+
+  @@map("challenge")
+}
+
+model Ranking {
+  id          Int          @id @default(autoincrement())
+  userId      Int          @map("user_id")
+  points      Int
+  createdAt   DateTime     @map("created_at") @default(now())
+  updatedAt   DateTime     @map("updated_at") @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id])
+
+  @@map("ranking")
+}
+
+model UserActivity {
+  id          Int                 @id @default(autoincrement())
+  userId      Int                 @map("user_id")
+  actionId    Int?                @map("action_id")
+  challengeId Int?                @map("challenge_id")
+  
+  photoUrl    String?             @map("photo_url")
+  
+  status      UserActivityStatus  @default(PENDING)
+  approverId  Int?                @map("approver_id")
+  approvedAt  DateTime?           @map("approved_at")
+
+  date        DateTime            @map("date")
+  createdAt   DateTime            @map("created_at") @default(now())
+  updatedAt   DateTime            @map("updated_at") @updatedAt
+
+  user        User                @relation("UserActivities", fields: [userId], references: [id])
+  action      Action?             @relation(fields: [actionId], references: [id])
+  challenge   Challenge?          @relation(fields: [challengeId], references: [id])
+  approver    User?               @relation("Approver", fields: [approverId], references: [id])
+
+  @@map("user_activities")
+}
