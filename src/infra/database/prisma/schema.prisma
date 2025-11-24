@@ -123,6 +123,7 @@ model UserActivity {
   status      UserActivityStatus  @default(PENDING)
   approverId  Int?                @map("approver_id")
   approvedAt  DateTime?           @map("approved_at")
+  repprovedDescription String?    @map("repproved_description")
 
   date        DateTime            @map("date")
   createdAt   DateTime            @map("created_at") @default(now())

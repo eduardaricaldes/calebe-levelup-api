@@ -59,6 +59,7 @@ export type UserActivity = {
     status: Generated<UserActivityStatus>;
     approver_id: number | null;
     approved_at: Date | null;
+    repproved_description: string | null;
     date: Date;
     created_at: Generated<Date>;
     updated_at: Date;
