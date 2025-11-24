@@ -1,0 +1,1 @@
+controller (infra) -> usecase (app) -> implementação repository (infra) <ex: user-repository-kysely> -> database
