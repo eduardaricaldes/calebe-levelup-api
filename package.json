@@ -5,8 +5,12 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "migration:generate": "npx prisma migrate dev --name init --schema ./infra/database/prisma/schema.prisma",
-    "migration:prod": "npx prisma migrate deploy --schema ./infra/database/prisma/schema.prisma"
+    "migration: ": "npx prisma migrate dev --name init --schema ./src/infra/database/prisma/schema.prisma",
+    "migration:prod": "npx prisma migrate deploy --schema ./src/infra/database/prisma/schema.prisma",
+    "migration:generate": "prisma generate --schema ./src/infra/database/prisma/schema.prisma"
+  },
+  "prisma": {
+    "schema": "src/infra/database/prisma/schema.prisma"
   },
   "repository": {
     "type": "git",

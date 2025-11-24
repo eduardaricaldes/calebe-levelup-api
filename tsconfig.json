@@ -50,5 +50,5 @@
 
   },
   "include": ["src"],
-  "exclude": ["node_modules", "build", "src/prisma.config.ts"]
+  "exclude": ["node_modules", "build"]
 }
