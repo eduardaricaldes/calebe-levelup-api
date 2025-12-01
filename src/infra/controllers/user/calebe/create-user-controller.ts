@@ -1,9 +1,10 @@
 import CreateUserUseCase from "@/app/usecases/user/calebe/create-user-usecase";
+import { Request, Response } from "express";
 
 export class CreateUserController {
   constructor(private readonly createUserUseCase: CreateUserUseCase) {}  
 
-  async handle(request: any, response: any): Promise<any> {
+  async handle(request: Request, response: Response): Promise<Response> {
     try {
       const { name, email, password } = request.body;
 

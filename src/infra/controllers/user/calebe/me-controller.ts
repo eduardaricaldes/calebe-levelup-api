@@ -1,11 +1,13 @@
 import MeUseCase from "@/app/usecases/user/calebe/me-usecase";
+import { Request, Response } from "express";
+
+export type MeControllerRequest = Request & { user?: { externalId: string } };
 
 export class MeController {
   constructor(private readonly meUseCase: MeUseCase) {}  
 
-  async handle(request: any, response: any): Promise<any> {
+  async handle(request: MeControllerRequest, response: Response): Promise<Response> {
     try {
-      // O externalId deve vir do token JWT decodificado por um middleware de autenticação
       const externalId = request.user?.externalId;
 
       if (!externalId) {

@@ -1,9 +1,10 @@
 import LoginUseCase from "@/app/usecases/user/calebe/login-usecase";
+import { Request, Response } from "express";
 
 export class LoginController {
   constructor(private readonly loginUseCase: LoginUseCase) {}  
 
-  async handle(request: any, response: any): Promise<any> {
+  async handle(request: Request, response: Response): Promise<Response> {
     try {
       const { email, password } = request.body;
 

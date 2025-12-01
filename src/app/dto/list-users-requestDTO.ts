@@ -1,7 +1,7 @@
 export interface ListUsersRequestDTO {
-  page?: number;
-  limit?: number;
-  status?: string;
-  role?: string;
-  search?: string;
+  page?: number | undefined;
+  limit?: number | undefined;
+  status?: string | undefined;
+  role?: string | undefined;
+  search?: string | undefined;
 }
