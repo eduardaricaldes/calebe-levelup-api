@@ -41,6 +41,7 @@ export type Ranking = {
 };
 export type User = {
     id: Generated<number>;
+    external_id: string | null;
     name: string;
     email: string;
     password: string;

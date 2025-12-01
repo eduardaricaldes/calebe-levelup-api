@@ -6,6 +6,9 @@ export class UserRepositoryKysely implements UserRepository {
   async findById(id: number): Promise<User | null> {
     throw new Error("Method not implemented.");
   }
+  async findByExternalId(externalId: string): Promise<User | null> {
+    throw new Error("Method not implemented.");
+  }
   async findByEmail(email: string): Promise<User | null> {
     throw new Error("Method not implemented.");
   }

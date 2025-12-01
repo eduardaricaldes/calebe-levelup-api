@@ -37,15 +37,16 @@ enum UserActivityStatus {
 
 
 model User {
-  id        Int          @id @default(autoincrement())
-  name      String
-  email     String       @unique
-  password  String
-  avatarURL String?      @map("avatar_url")
-  status    UserStatus   @default(ACTIVE)
-  role      UserRole     @default(USER)
-  createdAt DateTime     @map("created_at") @default(now())
-  updatedAt DateTime     @map("updated_at") @updatedAt
+  id         Int          @id @default(autoincrement())
+  externalId String?      @default(uuid()) @map("external_id") @unique
+  name       String
+  email      String       @unique
+  password   String
+  avatarURL  String?      @map("avatar_url")
+  status     UserStatus   @default(ACTIVE)
+  role       UserRole     @default(USER)
+  createdAt  DateTime     @map("created_at") @default(now())
+  updatedAt  DateTime     @map("updated_at") @updatedAt
 
   rankings           Ranking[]
   activities         UserActivity[] @relation("UserActivities")

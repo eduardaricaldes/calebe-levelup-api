@@ -1,11 +1,10 @@
 import UserRepository, { CreateUserDTO } from "@/domain/repositories/user-repository";
 import { CreateUserRequestDTO } from "@/app/dto/create-user-requestDTO";
-import { UserStatus } from "@/domain/entities/user";
+import { UserRole, UserStatus } from "@/domain/entities/user";
 import { CreateUserResponseDTO } from "@/app/dto/create-user-responseDTO";
 import PasswordHasher from "@/domain/services/password-hasher";
-import { UserRole } from "@/infra/database/types/enums";
 
-export default class CreateUserUseCase {
+export default class CreateAdminUseCase {
   
   constructor(
     private readonly userRepository: UserRepository,
@@ -32,7 +31,8 @@ export default class CreateUserUseCase {
       name: createUserRequestDTO.name,
       email: createUserRequestDTO.email,
       password: passwordHash,
-      role: UserRole.USER,
+      role: UserRole.ADMIN
+      ,
       status: UserStatus.WAITING_APPROVAL,
     }
   }
