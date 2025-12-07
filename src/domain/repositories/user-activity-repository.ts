@@ -2,9 +2,9 @@ import UserActivity, { UserActivityStatus } from "@/domain/entities/user-activit
 
 export interface CreateUserActivityDTO {
   userId: number;
-  actionId?: number;
-  challengeId?: number;
-  photoUrl?: string;
+  actionId?: number | undefined;
+  challengeId?: number | undefined;
+  photoUrl?: string | undefined;
   date: Date;
 }
 
