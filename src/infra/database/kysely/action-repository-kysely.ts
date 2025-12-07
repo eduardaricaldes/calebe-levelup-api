@@ -27,11 +27,11 @@ export default class ActionRepositoryKysely implements ActionRepository {
     });
   }
 
-  async findById(id: string): Promise<Action | null> {
+  async findById(id: number): Promise<Action | null> {
     const action = await this.db
       .selectFrom('action')
       .selectAll()
-      .where('id', '=', parseInt(id))
+      .where('id', '=', id)
       .executeTakeFirst();
 
     if (!action) {
@@ -120,11 +120,11 @@ export default class ActionRepositoryKysely implements ActionRepository {
     return actions.map(action => this.mapToEntity(action));
   }
 
-  async findByCategoryId(categoryId: string): Promise<Action[] | null> {
+  async findByCategoryId(categoryId: number): Promise<Action[] | null> {
     const actions = await this.db
       .selectFrom('action')
       .selectAll()
-      .where('category_id', '=', parseInt(categoryId))
+      .where('category_id', '=', categoryId)
       .orderBy('date', 'desc')
       .execute();
 

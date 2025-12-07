@@ -6,7 +6,7 @@ export default class UpdateActionUseCase {
     private readonly actionRepository: ActionRepository,
   ) {}
   
-  async execute(id: string, updateActionRequestDTO: UpdateActionRequestDTO): Promise<void> {
+  async execute(id: number, updateActionRequestDTO: UpdateActionRequestDTO): Promise<void> {
     const action = await this.actionRepository.findById(id);
 
     if (!action) {
