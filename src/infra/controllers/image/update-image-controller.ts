@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import UploadImageUseCase from "@/app/usecases/image/upload-image-usecase";
-import multer from "multer";
+import UpdateImageUseCase from "@/app/usecases/image/update-image-usecase";
+import * as multer from "multer";
 
 // Configuração do multer para upload em memória
 const upload = multer({
@@ -25,13 +25,21 @@ const upload = multer({
   },
 });
 
-export const uploadMiddleware = upload.single("image");
+export const updateImageMiddleware = upload.single("image");
 
-export default class UploadImageController {
-  constructor(private readonly uploadImageUseCase: UploadImageUseCase) {}
+export default class UpdateImageController {
+  constructor(private readonly updateImageUseCase: UpdateImageUseCase) {}
 
   async handle(req: Request, res: Response): Promise<Response> {
     try {
+      const { id } = req.params;
+
+      if (!id) {
+        return res.status(400).json({
+          error: "Image ID is required",
+        });
+      }
+
       // Verificar se o arquivo foi enviado
       if (!req.file) {
         return res.status(400).json({
@@ -39,24 +47,29 @@ export default class UploadImageController {
         });
       }
 
-      // Obter userId de um token JWT (auth middleware)
-      const userId = (req as any).user?.id;
+      // Obter userId e role de um token JWT (auth middleware)
+      const requestingUserId = (req as any).user?.id;
+      const userRole = (req as any).user?.role;
 
-      if (!userId) {
+      if (!requestingUserId) {
         return res.status(401).json({
           error: "Unauthorized",
         });
       }
 
-      const image = await this.uploadImageUseCase.execute({
+      const isAdmin = userRole === "ADMIN";
+
+      const image = await this.updateImageUseCase.execute({
+        id: Number(id),
         file: req.file.buffer,
         originalName: req.file.originalname,
         mimeType: req.file.mimetype,
         size: req.file.size,
-        userId: Number(userId),
+        requestingUserId,
+        isAdmin,
       });
 
-      return res.status(201).json({
+      return res.status(200).json({
         id: image.id,
         url: image.url,
         fileName: image.fileName,
@@ -66,6 +79,12 @@ export default class UploadImageController {
         createdAt: image.createdAt,
       });
     } catch (error) {
+      if (error instanceof Error && error.message === "You don't have permission to update this image") {
+        return res.status(403).json({
+          error: error.message,
+        });
+      }
+
       return res.status(400).json({
         error: error instanceof Error ? error.message : "Unknown error",
       });
