@@ -50,7 +50,8 @@ model User {
 
   rankings           Ranking[]
   activities         UserActivity[] @relation("UserActivities")
-  approvedActivities UserActivity[] @relation("Approver") 
+  approvedActivities UserActivity[] @relation("Approver")
+  images             Image[]
 
   @@map("users")
 }
@@ -136,4 +137,21 @@ model UserActivity {
   approver    User?               @relation("Approver", fields: [approverId], references: [id])
 
   @@map("user_activities")
+}
+
+model Image {
+  id           Int      @id @default(autoincrement())
+  originalName String   @map("original_name")
+  fileName     String   @unique @map("file_name")
+  mimeType     String   @map("mime_type")
+  size         Int
+  url          String
+  userId       Int      @map("user_id")
+  createdAt    DateTime @map("created_at") @default(now())
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([fileName])
+  @@map("images")
 }

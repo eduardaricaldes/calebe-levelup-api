@@ -32,6 +32,16 @@ export type Challenge = {
     created_at: Generated<Date>;
     updated_at: Date;
 };
+export type Image = {
+    id: Generated<number>;
+    original_name: string;
+    file_name: string;
+    mime_type: string;
+    size: number;
+    url: string;
+    user_id: number;
+    created_at: Generated<Date>;
+};
 export type Ranking = {
     id: Generated<number>;
     user_id: number;
@@ -69,6 +79,7 @@ export type DB = {
     action: Action;
     category: Category;
     challenge: Challenge;
+    images: Image;
     ranking: Ranking;
     user_activities: UserActivity;
     users: User;
