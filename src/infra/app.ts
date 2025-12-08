@@ -4,6 +4,10 @@ import { createDatabase } from './database/kysely/database';
 import { Container } from './container';
 import { setupRoutes } from './routes';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export function createApp(): Application {
   const app = express();
