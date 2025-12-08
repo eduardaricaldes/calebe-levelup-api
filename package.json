@@ -5,9 +5,13 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "migration: ": "npx prisma migrate dev --name init --schema ./src/infra/database/prisma/schema.prisma",
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "migration": "npx prisma migrate dev --name init --schema ./src/infra/database/prisma/schema.prisma",
     "migration:prod": "npx prisma migrate deploy --schema ./src/infra/database/prisma/schema.prisma",
-    "migration:generate": "prisma generate --schema ./src/infra/database/prisma/schema.prisma"
+    "migration:generate": "prisma generate --schema ./src/infra/database/prisma/schema.prisma",
+    "test": "jest"
   },
   "prisma": {
     "schema": "src/infra/database/prisma/schema.prisma"
@@ -30,16 +34,20 @@
     "@prisma/adapter-pg": "^7.0.0",
     "@prisma/client": "^7.0.0",
     "@types/multer": "^2.0.0",
+    "@types/nodemailer": "^7.0.4",
     "argon2": "^0.44.0",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "kysely": "^0.28.8",
     "multer": "^2.0.2",
+    "nodemailer": "^7.0.11",
     "pg": "^8.16.3"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
     "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.10",
