@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import UpdateImageUseCase from "@/app/usecases/image/update-image-usecase";
-import * as multer from "multer";
+import multer from "multer";
 
 // Configuração do multer para upload em memória
 const upload = multer({

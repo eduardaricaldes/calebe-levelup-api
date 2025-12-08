@@ -3,8 +3,8 @@ import Action from "@/domain/entities/action";
 export interface ActionDTO {
   name: string;
   date: Date;
-  description?: string;
-  categoryId?: number;
+  description?: string | undefined;
+  categoryId?: number | undefined;
 }
 
 export default interface ActionRepository {
