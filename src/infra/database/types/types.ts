@@ -49,6 +49,14 @@ export type Ranking = {
     created_at: Generated<Date>;
     updated_at: Date;
 };
+export type RefreshToken = {
+    id: Generated<number>;
+    token: string;
+    user_id: number;
+    expires_at: Date;
+    created_at: Generated<Date>;
+    revoked_at: Date | null;
+};
 export type User = {
     id: Generated<number>;
     external_id: string | null;
@@ -81,6 +89,7 @@ export type DB = {
     challenge: Challenge;
     images: Image;
     ranking: Ranking;
+    refresh_tokens: RefreshToken;
     user_activities: UserActivity;
     users: User;
 };

@@ -5,12 +5,15 @@ import { LoginRequestDTO } from "@/app/dto/login-requestDTO";
 import { LoginResponseDTO } from "@/app/dto/login-responseDTO";
 import { UserStatus } from "@/domain/entities/user";
 
+import RefreshTokenRepository from "@/domain/repositories/refresh-token-repository";
+
 export default class LoginUseCase {
   
   constructor(
     private readonly userRepository: UserRepository,
     private readonly passwordHasher: PasswordHasher,
     private readonly tokenGenerator: TokenGenerator,
+    private readonly refreshTokenRepository: RefreshTokenRepository,
   ) {}
   
   async execute(loginRequestDTO: LoginRequestDTO): Promise<LoginResponseDTO> {
@@ -42,8 +45,20 @@ export default class LoginUseCase {
       email: user.email,
     });
 
+    // Gerar refresh token
+    const refreshToken = await this.tokenGenerator.generateRefreshToken();
+    const expiresAt = this.tokenGenerator.getRefreshTokenExpirationDate();
+
+    // Salvar refresh token no banco
+    await this.refreshTokenRepository.save({
+      token: refreshToken,
+      userId: user.id,
+      expiresAt,
+    });
+
     return {
       token,
+      refreshToken,
       user: {
         externalId: user.externalId,
         name: user.name,

@@ -8,6 +8,7 @@ import ChallengeRepositoryKysely from './database/kysely/challenge-repository-ky
 import CategoryRepositoryKysely from './database/kysely/category-repository-kysely';
 import UserActivityRepositoryKysely from './database/kysely/user-activity-repository-kysely';
 import ImageRepositoryKysely from './database/kysely/image-repository-kysely';
+import {RefreshTokenRepositoryKysely} from './database/kysely/refresh-token-repository-kysely';
 
 // Services
 import {Argon2PasswordHasher} from './hasher/password-hasher';
@@ -23,6 +24,8 @@ import UpdateUserUseCase from '../app/usecases/user/calebe/update-user-usecase';
 import GetUserByIdUseCase from '../app/usecases/user/calebe/get-user-by-external-id-usecase';
 import SendRecoveryEmailUseCase from '../app/usecases/user/calebe/send-recovery-email-usecase';
 import UpdatePasswordUseCase from '../app/usecases/user/calebe/update-password-usecase';
+import RefreshTokenUseCase from '../app/usecases/user/calebe/refresh-token-usecase';
+import LogoutUseCase from '../app/usecases/user/calebe/logout-usecase';
 
 // User Use Cases - Admin
 import CreateUserByAdminUseCase from '../app/usecases/user/admin/create-admin-usecase';
@@ -70,14 +73,15 @@ import GetImageByIdUseCase from '../app/usecases/image/get-image-by-id-usecase';
 import UpdateImageUseCase from '../app/usecases/image/update-image-usecase';
 import DeleteImageUseCase from '../app/usecases/image/delete-image-usecase';
 
-// Controllers - User Calebe
+// Controllers - User (Calebe)
 import {CreateUserController} from './controllers/user/calebe/create-user-controller';
 import {LoginController} from './controllers/user/calebe/login-controller';
 import {MeController} from './controllers/user/calebe/me-controller';
 import {UpdateUserController} from './controllers/user/calebe/update-user-controller';
-import {GetUserByExternalIdController} from './controllers/user/calebe/get-user-by-external-id-controller';
 import {SendRecoveryEmailController} from './controllers/user/calebe/send-recovery-email-controller';
 import {UpdatePasswordController} from './controllers/user/calebe/update-password-controller';
+import {RefreshTokenController} from './controllers/user/calebe/refresh-token-controller';
+import {LogoutController} from './controllers/user/calebe/logout-controller';
 
 // Controllers - User Admin
 import {CreateAdminController} from './controllers/user/admin/create-admin-controller';
@@ -139,6 +143,7 @@ export class Container {
   public categoryRepository: CategoryRepositoryKysely;
   public userActivityRepository: UserActivityRepositoryKysely;
   public imageRepository: ImageRepositoryKysely;
+  public refreshTokenRepository: RefreshTokenRepositoryKysely;
 
   // Services
   public passwordHasher: Argon2PasswordHasher;
@@ -154,6 +159,8 @@ export class Container {
   public getUserByIdUseCase: GetUserByIdUseCase;
   public sendRecoveryEmailUseCase: SendRecoveryEmailUseCase;
   public updatePasswordUseCase: UpdatePasswordUseCase;
+  public refreshTokenUseCase: RefreshTokenUseCase;
+  public logoutUseCase: LogoutUseCase;
 
   // User Use Cases - Admin
   public createUserByAdminUseCase: CreateUserByAdminUseCase;
@@ -201,14 +208,16 @@ export class Container {
   public updateImageUseCase: UpdateImageUseCase;
   public deleteImageUseCase: DeleteImageUseCase;
 
-  // Controllers - User Calebe
+  // Controllers - User (Calebe)
   public createUserController: CreateUserController;
   public loginController: LoginController;
   public meController: MeController;
   public updateUserController: UpdateUserController;
-  public getUserByIdController: GetUserByExternalIdController;
+  public getUserByIdController: GetUserByIdController;
   public sendRecoveryEmailController: SendRecoveryEmailController;
   public updatePasswordController: UpdatePasswordController;
+  public refreshTokenController: RefreshTokenController;
+  public logoutController: LogoutController;
 
   // Controllers - User Admin
   public createAdminController: CreateAdminController;
@@ -270,6 +279,7 @@ export class Container {
     this.categoryRepository = new CategoryRepositoryKysely(db);
     this.userActivityRepository = new UserActivityRepositoryKysely(db);
     this.imageRepository = new ImageRepositoryKysely(db);
+    this.refreshTokenRepository = new RefreshTokenRepositoryKysely(db);
 
     // Initialize Services
     this.passwordHasher = new Argon2PasswordHasher();
@@ -282,12 +292,14 @@ export class Container {
 
     // Initialize User Use Cases - Calebe
     this.createUserUseCase = new CreateUserUseCase(this.userRepository, this.passwordHasher);
-    this.loginUserUseCase = new LoginUserUseCase(this.userRepository, this.passwordHasher, this.tokenGenerator);
+    this.loginUserUseCase = new LoginUserUseCase(this.userRepository, this.passwordHasher, this.tokenGenerator, this.refreshTokenRepository);
     this.meUseCase = new MeUseCase(this.userRepository);
     this.updateUserUseCase = new UpdateUserUseCase(this.userRepository);
     this.getUserByIdUseCase = new GetUserByIdUseCase(this.userRepository);
     this.sendRecoveryEmailUseCase = new SendRecoveryEmailUseCase(this.userRepository, this.emailSender);
     this.updatePasswordUseCase = new UpdatePasswordUseCase(this.userRepository, this.passwordHasher);
+    this.refreshTokenUseCase = new RefreshTokenUseCase(this.refreshTokenRepository, this.userRepository, this.tokenGenerator);
+    this.logoutUseCase = new LogoutUseCase(this.refreshTokenRepository);
 
     // Initialize User Use Cases - Admin
     this.createUserByAdminUseCase = new CreateUserByAdminUseCase(this.userRepository, this.passwordHasher);
@@ -344,9 +356,10 @@ export class Container {
     this.loginController = new LoginController(this.loginUserUseCase);
     this.meController = new MeController(this.meUseCase);
     this.updateUserController = new UpdateUserController(this.updateUserUseCase);
-    this.getUserByIdController = new GetUserByExternalIdController(this.getUserByIdUseCase);
     this.sendRecoveryEmailController = new SendRecoveryEmailController(this.sendRecoveryEmailUseCase);
     this.updatePasswordController = new UpdatePasswordController(this.updatePasswordUseCase);
+    this.refreshTokenController = new RefreshTokenController(this.refreshTokenUseCase);
+    this.logoutController = new LogoutController(this.logoutUseCase);
 
     // Initialize Controllers - User Admin
     this.createAdminController = new CreateAdminController(this.createAdminUseCase);

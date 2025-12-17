@@ -15,6 +15,8 @@ export function setupRoutes(container: Container): Router {
   // Auth
   router.post('/auth/register', (req, res) => container.createUserController.handle(req, res));
   router.post('/auth/login', (req, res) => container.loginController.handle(req, res));
+  router.post('/auth/refresh', (req, res) => container.refreshTokenController.handle(req, res));
+  router.post('/auth/logout', container.authenticate, (req, res) => container.logoutController.handle(req, res));
 
   // ============================================
   // USER ROUTES (Authentication Required)
